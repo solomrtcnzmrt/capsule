@@ -311,16 +311,18 @@ module foot() {
 //
 //   Çalışma prensibi:
 //   · Body plate üstüne oturur; delikler BASAMAKLIDIR:
-//     — Üst 4 mm : CAP_HOLE (7.95 mm)  — kapak burada oturur
-//     — Alt 8 mm : BODY_HOLE (7.64 mm) — gövde bu bölümden geçer
-//   · Kapak alt kenarı basamak üzerinde oturur (yakalanır)
+//     — Üst 4.5 mm : CAP_HOLE (7.95 mm)  — kapak burada oturur
+//     — Alt 7.5 mm : SEP_HOLE (7.54 mm)  — gövde bu bölümden geçer
+//   · SEP_HOLE = BODY_OD + 0.20 mm
+//     → gövde (7.34) geçer ✓  /  kapak (7.65) yakalanır ✓
+//     → too-tight hatası önlenir; FDM toleransı gözetilir
 //   · Tabla yatay kaydırılınca kapaklar gövdeden ayrılır
-//   · Üst ve alt girişlerde temiz pah — pürüzsüz geçiş
 // ═══════════════════════════════════════════════════════════════
 module middle_plate() {
-    // Basamak yüksekliği (CAP_HOLE bölümü)
-    STEP_H = 4.5;
-    // Pah yarıçapı
+    STEP_H   = 4.5;
+    // Separator hole — body geçer, cap yakalanır
+    // BODY_OD+0.20 → gövde boşluğu 0.10/kenar, kapak tutumu 0.055/kenar
+    SEP_HOLE = BODY_OD + 0.20;  // 7.54 mm (size 0)
     step_c_r = 0.8;
 
     difference() {
@@ -328,13 +330,13 @@ module middle_plate() {
 
         for (r = [0:N-1], c = [0:N-1])
             translate([BORDER + c*PITCH, BORDER + r*PITCH, 0]) {
-                // Alt bölüm — gövde geçişi (BODY_HOLE)
+                // Alt bölüm — gövde geçişi (SEP_HOLE — daraltılmış)
                 translate([0, 0, -EPS])
-                    cylinder(d = BODY_HOLE,
+                    cylinder(d = SEP_HOLE,
                              h = PLATE_T - STEP_H + EPS, $fn = HOLE_FN);
                 // Basamak geçişi (konik — pürüzsüz)
                 translate([0, 0, PLATE_T - STEP_H - step_c_r])
-                    cylinder(d1 = BODY_HOLE,
+                    cylinder(d1 = SEP_HOLE,
                              d2 = CAP_HOLE,
                              h  = step_c_r * 2, $fn = HOLE_FN);
                 // Üst bölüm — kapak oturması (CAP_HOLE)
@@ -517,25 +519,44 @@ module tamper() {
 // ═══════════════════════════════════════════════════════════════
 //   § 8  SPREADER  (toz yayma spatulası)
 //
-//   · Trapez formlu düz spatula
-//   · Baskı yönü: T ekseninde (4.5 mm ince)
-//   · Ön kenar 28° pahıyla temiz tek geçiş yayma
-//   · Spill guard iç açıklığına uyacak genişlikte
+//   · Referans görsele göre: genişlik 96 mm, yükseklik 135 mm
+//   · Trapez form: alt geniş (96 mm), üst dar (96-2×12=72 mm)
+//   · Ön kenar 28° pahıyla tek geçişte temiz yayma
+//   · Üst yüzeyde boyuna oluklar — toz akışını düzenler
+//   · Baskı yönü: T (4.5 mm) ekseninde, destek yok
 // ═══════════════════════════════════════════════════════════════
 module spreader() {
-    T   = 4.5;
-    W   = PLATE_SIZE - 2*SPILL_W - 5;  // 135 mm (spill guard içine sığar)
-    H   = 145;
-    R   = 3;
+    T       = 4.5;    // kalınlık
+    W       = 96;     // alt taban genişliği (referans ölçü)
+    H       = 135;    // yükseklik
+    TAPER   = 12;     // her kenardan daralan miktar
+    R       = 3;      // köşe yuvarlatma
+
+    // Oluk parametreleri
+    GROOVE_W = 1.5;   // oluk genişliği
+    GROOVE_D = 1.2;   // oluk derinliği
+    GROOVE_N = 7;     // oluk sayısı
+    GROOVE_GAP = (W - 2*TAPER - GROOVE_N*GROOVE_W) / (GROOVE_N + 1);
 
     difference() {
-        linear_extrude(T)
-            offset(r = R) offset(r = -R)
-                polygon([[0,0],[W,0],[W-16,H],[16,H]]);
-        // Ön bevel kenar (keskin toz yayma kenarı)
+        union() {
+            // Ana gövde
+            linear_extrude(T)
+                offset(r = R) offset(r = -R)
+                    polygon([[0,0],[W,0],[W-TAPER,H],[TAPER,H]]);
+        }
+
+        // Ön bevel — keskin yayma kenarı
         translate([-2, -EPS, T])
             rotate([28, 0, 0])
-                cube([W + 4, 16, 12]);
+                cube([W + 4, 18, 14]);
+
+        // Üst yüzey boyuna oluklar (referans görseldeki gibi)
+        for (i = [0:GROOVE_N-1]) {
+            x = TAPER + GROOVE_GAP + i * (GROOVE_W + GROOVE_GAP);
+            translate([x, R, T - GROOVE_D])
+                cube([GROOVE_W, H - 2*R, GROOVE_D + EPS]);
+        }
     }
 }
 

@@ -216,18 +216,20 @@ module foot() {
 
 // ═══════════════════════════════════════════════════════════════
 //   § 3  MIDDLE PLATE  (separator — basamaklı delik)
+//   SEP_HOLE = BODY_OD + 0.20 → gövde geçer, kapak yakalanır
 // ═══════════════════════════════════════════════════════════════
 module middle_plate() {
-    STEP_H = 5.0;
+    STEP_H   = 5.0;
+    SEP_HOLE = BODY_OD + 0.20;  // 8.38 mm (size 00)
     difference() {
         base_plate(PLATE_T);
         for (r = [0:N-1], c = [0:N-1])
             translate([BORDER + c*PITCH, BORDER + r*PITCH, 0]) {
                 translate([0, 0, -EPS])
-                    cylinder(d = BODY_HOLE,
+                    cylinder(d = SEP_HOLE,
                              h = PLATE_T - STEP_H + EPS, $fn = HOLE_FN);
                 translate([0, 0, PLATE_T - STEP_H - 0.8])
-                    cylinder(d1 = BODY_HOLE, d2 = CAP_HOLE,
+                    cylinder(d1 = SEP_HOLE, d2 = CAP_HOLE,
                              h = 1.6, $fn = HOLE_FN);
                 translate([0, 0, PLATE_T - STEP_H + 0.8 - EPS])
                     cylinder(d = CAP_HOLE,
@@ -354,19 +356,27 @@ module tamper() {
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 8  SPREADER
+//   § 8  SPREADER  (96 mm × 135 mm — referans ölçü)
 // ═══════════════════════════════════════════════════════════════
 module spreader() {
-    T = 4.5;
-    W = PLATE_SIZE - 2*SPILL_W - 5;
-    H = 145;
-    R = 3;
+    T       = 4.5;
+    W       = 96;     // referans: 96 mm
+    H       = 135;
+    TAPER   = 12;
+    R       = 3;
+    GROOVE_W = 1.5; GROOVE_D = 1.2; GROOVE_N = 7;
+    GROOVE_GAP = (W - 2*TAPER - GROOVE_N*GROOVE_W) / (GROOVE_N + 1);
     difference() {
         linear_extrude(T)
             offset(r=R) offset(r=-R)
-                polygon([[0,0],[W,0],[W-16,H],[16,H]]);
+                polygon([[0,0],[W,0],[W-TAPER,H],[TAPER,H]]);
         translate([-2,-EPS,T])
-            rotate([28,0,0]) cube([W+4, 16, 12]);
+            rotate([28,0,0]) cube([W+4, 18, 14]);
+        for (i = [0:GROOVE_N-1]) {
+            x = TAPER + GROOVE_GAP + i*(GROOVE_W + GROOVE_GAP);
+            translate([x, R, T - GROOVE_D])
+                cube([GROOVE_W, H - 2*R, GROOVE_D + EPS]);
+        }
     }
 }
 
