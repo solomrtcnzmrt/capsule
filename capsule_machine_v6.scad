@@ -1,146 +1,168 @@
 // ═══════════════════════════════════════════════════════════════
-//   CAPSULE FILLING MACHINE  —  V7
-//   Size 0 capsule · 100 holes · 10×10 grid · 170×170 mm base
-//   Bambu Lab P2S · PETG · 0.4 mm nozzle · 4 perimeters
+//   KAPSÜL DOLUM APARATI  —  Numara 0  (V8 · Temiz Geometri)
+//   100 delik · 10×10 grid · 170×170 mm tabla
+//   Bambu Lab P2S · PETG · 0.4 mm nozzle · 4 perimeter
 //
-//   PARTS
-//     body_plate   — capsule body holder with spring-loaded feet
-//     foot         — spring foot (print 4×, PETG or TPU)
-//     middle_plate — separation / organisation tray (orange)
-//     capping      — cap-holding plate with funnel entries
-//     frame        — raised-wall tray that aligns all plates
-//     spill_guard  — powder-containment frame
-//     spreader     — powder squeegee
-//     tamper       — peg tamper for powder compression
-//     tpu_spring   — printed spring alternative to metal
-//     alignment_pin— stack alignment dowel (print 4–8×)
-//     all          — all parts spread for reference
+//   ─── PARÇALAR ────────────────────────────────────────────────
+//   body_plate   — kapsül gövde tepsisi (yaylı ayaklı alt tabla)
+//   foot         — yaylı ayak (×4)
+//   middle_plate — ayırma / separator plakası
+//   capping      — kapak tutma plakası
+//   frame        — hizalama çerçevesi (tüm plakaları hizalar)
+//   spill_guard  — toz dökülme koruma çerçevesi
+//   spreader     — toz yayma spatulası
+//   tamper       — toz sıkıştırma tamper
+//   tpu_spring   — basılabilir TPU yay (metal yay alternatifi)
+//   alignment_pin— hizalama pimi (×4–8)
+//   all          — tüm parçalar yanda
 //
-//   HARDWARE per machine (×4 each)
-//     M4 × 35 mm button-head bolt  (ISO 7380, stainless)
-//     M4 hex nut                   (press-fit into foot)
-//     Compression spring  OD 8 mm · wire 0.8 mm · free L 20 mm
-//       (spring sits OUTSIDE bolt, VISIBLE between plate and foot)
+//   ─── DONANIM (her köşe için ×4) ─────────────────────────────
+//   M4 × 35 mm buton başlı cıvata  (ISO 7380 · 304 paslanmaz)
+//   M4 altıgen somun               (ayak içine press-fit)
+//   Sıkıştırma yayı:  OD 8 mm · tel Ø 0.8 mm · serbest L 20 mm
+//     (yay cıvata şaftı etrafında, tabla altı ile ayak arasında
+//      görünür şekilde çalışır — referans ürün görseli gibi)
 //
-//   SIZE 0 CAPSULE REFERENCE
-//     Cap  OD 7.65 mm  · L 11.5 mm
-//     Body OD 7.34 mm  · ID 7.13 mm · L 15.9 mm
-//     Assembled total length ≈ 22 mm
+//   ─── NUMARA 0 KAPSÜL ÖLÇÜLERİ (Capsugel/Lonza spec) ─────────
+//   Kapak  OD 7.65 mm · L 11.1 mm
+//   Gövde  OD 7.34 mm · ID 7.13 mm · L 15.9 mm
+//   Kilitli toplam ≈ 22.2 mm
 //
-//   ASSEMBLY ORDER (bottom to top)
-//     1. foot (×4) — spring around bolt, bolt through body plate
-//     2. body_plate — capsule bodies drop in, bodiesdown
-//     3. middle_plate — sits on top, separates halves
-//     4. frame — walls align everything
-//     5. capping — holds caps
-//     6. spill_guard — contains powder during filling
+//   ─── MONTAJ SIRASI (alttan üste) ────────────────────────────
+//   1. foot ×4  → yay cıvata şaftına geçer, body_plate'ten geçer
+//   2. body_plate  → kapsül gövdeleri açık taraf yukarı düşer
+//   3. middle_plate → üstten oturur, kapakları ayırır
+//   4. frame   → tüm tablaları çerçeveler
+//   5. capping → kapakları tutar
+//   6. spill_guard → dolum sırasında tozu tutar
 // ═══════════════════════════════════════════════════════════════
 
-// ─── DISPATCH ──────────────────────────────────────────────────
+// ─── HANGİ PARÇA RENDERLENSİN ──────────────────────────────────
 PART = "body_plate";
-//  Options: "body_plate" "foot" "middle_plate" "capping"
-//           "frame" "spill_guard" "spreader" "tamper"
-//           "tpu_spring" "alignment_pin" "all"
+//  "body_plate"  "foot"    "middle_plate"  "capping"
+//  "frame"       "spill_guard"  "spreader" "tamper"
+//  "tpu_spring"  "alignment_pin"           "all"
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § A  PRIMARY PARAMETERS  (edit freely)
+//   § A  ANA PARAMETRELER  (yalnızca burası düzenlenir)
 // ═══════════════════════════════════════════════════════════════
 
-PITCH         = 14.5;   // hole centre-to-centre spacing, mm
-BORDER        = 19.75;  // plate edge → first hole centre
-                        //   = (170 - 9×14.5) / 2  =  19.75
+PITCH       = 14.5;   // delik merkez-merkez mesafesi (mm)
+BORDER      = 19.75;  // plaka kenarı → ilk delik merkezi
+                      //   = (170 − 9×14.5) / 2 = 19.75
 
-// Foot / bolt corner position — both are concentric at this offset
-FOOT_POS      = 10;     // inset from plate corner (mm)
-FOOT_DIAMETER = 16;     // foot OD (visible spring collar)
+FOOT_POS    = 12;     // köşeden cıvata/ayak merkezi uzaklığı (mm)
+                      //   dört köşede cıvata ve ayak KONSANTRİK
 
-FRAME_RIM     = 9;      // frame-plate inner wall thickness
-
-
-// ═══════════════════════════════════════════════════════════════
-//   § B  FIXED GEOMETRY
-// ═══════════════════════════════════════════════════════════════
-
-PLATE_SIZE  = 170;
-N           = 10;       // holes per axis
-PLATE_T     = 13;       // standard plate thickness
-CORNER_R    = 4;        // corner rounding radius
-CHAMFER     = 0.8;      // top-edge chamfer height
-
-// ─── Size-0 capsule (verified from pharmacopoeia data) ─────────
-CAP_OD    = 7.65;
-BODY_OD   = 7.34;
-BODY_ID   = 7.13;
-CAP_L     = 11.5;       // cap shell length
-BODY_L    = 15.9;       // body shell length
-TOL       = 0.28;       // diametric clearance for printed holes
-
-CAP_HOLE  = CAP_OD  + TOL;   // 7.93 mm
-BODY_HOLE = BODY_OD + TOL;   // 7.62 mm
-PEG_OD    = BODY_ID - 0.25;  // 6.88 mm — tamper peg
-PEG_L     = 17;
-FUNNEL_D  = 13;               // funnel top diameter
-
-// ─── M4 hardware ────────────────────────────────────────────────
-M4_CLEAR    = 4.5;    // shaft clearance hole
-M4_HEAD_D   = 9.0;   // button-head counterbore diameter
-M4_HEAD_H   = 3.2;   // button-head height
-M4_NUT_FF   = 7.2;   // hex-nut flat-to-flat (+ tolerance)
-M4_NUT_H    = 3.5;   // hex-nut height
-
-// ─── Spring (external, visible) ─────────────────────────────────
-SPR_OD       = 8.0;   // spring outer diameter
-SPR_FREE     = 20.0;  // spring free length
-SPR_PRECOMP  = 4.0;   // assembly pre-compression
-SPR_CLEARANCE = SPR_OD + 1.5;  // pocket / counterbore diameter
-
-// ─── Foot ───────────────────────────────────────────────────────
-FOOT_D  = FOOT_DIAMETER;
-FOOT_H  = 12;         // foot cylinder height (spring sits on top face)
-
-// ─── Alignment pins ─────────────────────────────────────────────
-EDGE_OFF    = 6;      // alignment-hole inset from plate edge
-ALIGN_D     = 3.3;    // pin clearance hole diameter
-PIN_L       = 50;     // alignment pin length
-
-// ─── Spill guard ────────────────────────────────────────────────
-SPILL_W     = 10;     // wall width
-SPILL_H     = 16;     // wall height above plate surface
-
-// ─── Frame plate ────────────────────────────────────────────────
-FRAME_H     = 10;     // height of raised rim
-
-// ─── Render quality ─────────────────────────────────────────────
-$fa = 1;
-$fs = 0.4;
-EPS     = 0.15;
-HOLE_FN = 72;
+FRAME_RIM   = 9;      // çerçeve iç duvar kalınlığı (mm)
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § C  HELPER MODULES
+//   § B  SABİT GEOMETRİ
 // ═══════════════════════════════════════════════════════════════
 
-// 10×10 grid of cylinders at capsule hole positions
+PLATE_SIZE  = 170;    // kare tabla kenar uzunluğu
+N           = 10;     // eksen başına delik sayısı
+PLATE_T     = 12;     // standart tabla kalınlığı
+CORNER_R    = 4;      // köşe yuvarlatma yarıçapı
+CHAMFER     = 0.8;    // üst kenar pah yüksekliği
+
+// ─── Numara 0 kapsül delikleri ──────────────────────────────────
+//   TOL = 0.30 mm: PETG için iyi kayan geçme
+CAP_OD      = 7.65;
+BODY_OD     = 7.34;
+BODY_ID     = 7.13;
+CAP_L       = 11.1;   // kapak boyu (kilitli)
+BODY_L      = 15.9;   // gövde boyu (kilitli)
+TOL         = 0.30;
+
+CAP_HOLE    = CAP_OD  + TOL;  // 7.95 mm — kapak geçme deliği
+BODY_HOLE   = BODY_OD + TOL;  // 7.64 mm — gövde geçme deliği
+PEG_OD      = BODY_ID - 0.25; // 6.88 mm — tamper peg çapı
+
+// Delik giriş pahı (kapsül yüklemeyi kolaylaştırır)
+ENTRY_C     = 1.2;    // giriş pahı derinliği (mm)
+ENTRY_ANGLE = 30;     // pah açısı (°)
+
+// ─── M4 donanım ─────────────────────────────────────────────────
+M4_CLEAR    = 4.5;    // cıvata şaftı geçme deliği
+M4_HEAD_D   = 9.2;    // buton baş counterbore çapı
+M4_HEAD_H   = 3.2;    // buton baş yüksekliği
+M4_NUT_FF   = 7.2;    // hex somun düz-düz (toleranslı)
+M4_NUT_H    = 3.5;    // hex somun yüksekliği
+
+// ─── Yay (dıştan görünür, cıvata etrafında) ─────────────────────
+SPR_OD      = 8.0;    // yay dış çapı
+SPR_FREE    = 20.0;   // yay serbest boyu
+SPR_ID      = M4_CLEAR + 0.2; // yay iç çapı (cıvata üstünden geçer)
+SPR_SEAT_D  = SPR_OD + 2.0;   // yay oturma cebinin çapı
+
+// ─── Ayak ───────────────────────────────────────────────────────
+FOOT_D      = 18;     // ayak dış çapı
+FOOT_H      = 11;     // ayak yüksekliği
+
+// ─── Hizalama pimi ──────────────────────────────────────────────
+EDGE_OFF    = 6;      // kenardan hizalama deliği merkezi
+ALIGN_D     = 3.3;    // hizalama pimi geçme deliği
+PIN_L       = 52;     // pim uzunluğu
+
+// ─── Toz koruma çerçevesi ────────────────────────────────────────
+SPILL_W     = 10;     // duvar kalınlığı
+SPILL_H     = 18;     // duvar yüksekliği
+
+// ─── Çerçeve plakası ─────────────────────────────────────────────
+FRAME_H     = 12;     // yükseltilmiş çerçeve rim yüksekliği
+
+// ─── Render kalitesi ─────────────────────────────────────────────
+$fa = 0.8;
+$fs = 0.3;
+EPS     = 0.15;       // z-fighting önleme epsilonu
+HOLE_FN = 80;         // kapsül delikleri için kenar sayısı (pürüzsüz)
+
+
+// ═══════════════════════════════════════════════════════════════
+//   § C  YARDIMCI MODÜLLER
+// ═══════════════════════════════════════════════════════════════
+
+// 10×10 grid — delik silindirleri
 module hole_grid(d, h, z = 0) {
     for (r = [0:N-1], c = [0:N-1])
         translate([BORDER + c*PITCH, BORDER + r*PITCH, z])
             cylinder(d = d, h = h, $fn = HOLE_FN);
 }
 
-// Four corner positions — bolt and foot are CONCENTRIC here
+// Kapsül deliği: silindir + üst giriş pahı (tek çağrıda)
+// z=0 tabanı plakanın alt yüzeyidir
+module cap_hole_w_chamfer(d, plate_t) {
+    // Ana silindir
+    translate([0, 0, -EPS])
+        cylinder(d = d, h = plate_t + 2*EPS, $fn = HOLE_FN);
+    // Üst giriş pahı
+    c_r = ENTRY_C * tan(ENTRY_ANGLE);
+    translate([0, 0, plate_t - ENTRY_C])
+        cylinder(d1 = d, d2 = d + 2*c_r,
+                 h = ENTRY_C + EPS, $fn = HOLE_FN);
+}
+
+// 10×10 grid — pah dahil delikler
+module hole_grid_chamfered(d, plate_t) {
+    for (r = [0:N-1], c = [0:N-1])
+        translate([BORDER + c*PITCH, BORDER + r*PITCH, 0])
+            cap_hole_w_chamfer(d, plate_t);
+}
+
+// Dört köşe konumu — cıvata ve ayak KONSANTRİK (aynı merkez)
 module four_corners() {
     s = PLATE_SIZE - FOOT_POS;
     for (p = [[FOOT_POS, FOOT_POS],
               [s,        FOOT_POS],
               [FOOT_POS, s       ],
               [s,        s       ]])
-        translate([p.x, p.y, 0])
-            children();
+        translate([p.x, p.y, 0]) children();
 }
 
-// Four mid-edge alignment-hole positions
+// Dört kenar ortası — hizalama pimi delikleri
 module four_mid_edges() {
     c = PLATE_SIZE / 2;
     s = PLATE_SIZE - EDGE_OFF;
@@ -148,37 +170,34 @@ module four_mid_edges() {
               [c,        s       ],
               [EDGE_OFF, c       ],
               [s,        c       ]])
-        translate([p.x, p.y, 0])
-            children();
+        translate([p.x, p.y, 0]) children();
 }
 
-// Flat rounded plate with optional top chamfer
+// Yuvarlatılmış köşeli düz tabla (üst pah opsiyonlu)
 module base_plate(t = PLATE_T, sz = PLATE_SIZE, chamfer = true) {
+    profile = offset(r = CORNER_R) offset(r = -CORNER_R) square([sz, sz]);
     if (chamfer) {
         union() {
             linear_extrude(t - CHAMFER)
-                offset(r = CORNER_R) offset(r = -CORNER_R)
-                    square([sz, sz]);
+                offset(r = CORNER_R) offset(r = -CORNER_R) square([sz, sz]);
             translate([0, 0, t - CHAMFER])
                 linear_extrude(CHAMFER, scale = (sz - 2*CHAMFER)/sz)
-                    offset(r = CORNER_R) offset(r = -CORNER_R)
-                        square([sz, sz]);
+                    offset(r = CORNER_R) offset(r = -CORNER_R) square([sz, sz]);
         }
     } else {
         linear_extrude(t)
-            offset(r = CORNER_R) offset(r = -CORNER_R)
-                square([sz, sz]);
+            offset(r = CORNER_R) offset(r = -CORNER_R) square([sz, sz]);
     }
 }
 
-// Through-holes at mid-edge positions for alignment pins
+// Hizalama pimi geçme delikleri (kenar ortaları, tam boy)
 module align_holes() {
     four_mid_edges()
         translate([0, 0, -EPS])
-            cylinder(d = ALIGN_D, h = 300, $fn = 32);
+            cylinder(d = ALIGN_D, h = PLATE_SIZE, $fn = 32);
 }
 
-// Hex-nut pocket (M4, from a given Z upward)
+// M4 hex somun cep (Z konumu yukarıdan ölçülür)
 module nut_pocket(from_z) {
     translate([0, 0, from_z])
         rotate([0, 0, 30])
@@ -188,156 +207,176 @@ module nut_pocket(from_z) {
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 1  BODY PLATE
+//   § 1  BODY PLATE  (kapsül gövde tepsisi — en alt tabla)
 //
-//   · 100 capsule-BODY holes  (bodies drop in, open end up)
-//   · M4 button-head bolt counterbore on TOP surface at 4 corners
-//   · Spring-seat counterbore on BOTTOM — spring sits here,
-//     visible between plate underside and foot top
-//   · Mid-edge alignment pin holes
+//   Çalışma prensibi:
+//   · Kapsül gövdeleri (açık taraf yukarı) deliklerden düşürülür
+//   · Gövde L = 15.9 mm, tabla = 12 mm → gövde üstten 3.9 mm taşar
+//   · Toz gövdelere üstten doldurulur
+//   · Tabla kapping üzerine çevrilip bastırılır →
+//     yay ayaklar sıkışır, gövdeler kapak içine girer (kaplama)
 //
-//   Spring-foot logic (matching reference product):
-//     Bolt head is flush with plate top.
-//     Spring (OD 8 mm) wraps bolt shaft, compressed between
-//     plate underside and foot top face.
-//     Foot floats down ~SPR_PRECOMP mm when pressed.
+//   Delik özellikleri:
+//   · BODY_HOLE = 7.64 mm tam derinlik
+//   · Üstte 1.2 mm×30° pah → kapsül yükleme kolaylaşır
+//   · Alt yüzeyde yay oturma cebi (SPR_SEAT_D × 3.5 mm derin)
+//
+//   Köşe cıvata:
+//   · Üstte M4 buton baş counterbore (flush)
+//   · Alt yüzeyde yay oturma cebi (yay cıvata etrafında görünür)
 // ═══════════════════════════════════════════════════════════════
 module body_plate() {
     difference() {
         base_plate(PLATE_T);
 
-        // ── 100 capsule body holes (full depth) ────────────────
-        translate([0, 0, -EPS])
-            hole_grid(BODY_HOLE, PLATE_T + 2*EPS);
+        // ── 100 kapsül gövde deliği (pah dahil) ───────────────
+        hole_grid_chamfered(BODY_HOLE, PLATE_T);
 
-        // ── Corner bolt + spring features ──────────────────────
+        // ── Köşe cıvata + yay oturma cebi ──────────────────────
         four_corners() {
-            // M4 shaft clearance — full thickness
+            // M4 şaft geçme deliği — tam kalınlık
             translate([0, 0, -EPS])
                 cylinder(d = M4_CLEAR,
-                         h = PLATE_T + 2*EPS, $fn = 32);
+                         h = PLATE_T + 2*EPS, $fn = 36);
 
-            // Button-head counterbore — recessed from TOP
-            // head sits flush so other plates can stack flat
+            // Buton baş counterbore — üst yüzeyde flush
             translate([0, 0, PLATE_T - M4_HEAD_H])
                 cylinder(d = M4_HEAD_D,
                          h = M4_HEAD_H + EPS, $fn = 48);
 
-            // Spring-seat pocket on BOTTOM (spring coils rest here)
-            // Diameter slightly larger than spring OD
+            // Yay oturma cebi — alt yüzeyde
+            // Yay bu cep içinde başlar, ayak üst yüzeyinde biter
             translate([0, 0, -EPS])
-                cylinder(d = SPR_CLEARANCE,
+                cylinder(d = SPR_SEAT_D,
                          h = 3.5, $fn = 48);
         }
 
-        // ── Mid-edge alignment pin through-holes ───────────────
+        // ── Kenar hizalama pimi delikleri ──────────────────────
         align_holes();
     }
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 2  FOOT  (print 4×)
+//   § 2  FOOT  (yaylı ayak — ×4 baskı)
 //
-//   · Cylinder FOOT_D × FOOT_H
-//   · Top face: spring rests on flat rim around M4 clearance hole
-//   · M4 nut press-fit pocket from TOP (bolt threads in from above)
-//   · M4 shaft clearance through full height
-//   · Anti-skid chamfer on bottom edge
-//   · Optional rubber-pad recess on sole (0.8 mm deep)
+//   · FOOT_D × FOOT_H silindir + alt geniş flange bileziği
+//   · Üst yüzeyden hex somun press-fit cebi (cıvata buraya vidalanır)
+//   · M4 şaft geçme deliği tam boydan
+//   · Alt yüzeyden silikon ped reses (yapıştırılır, kaymayı önler)
+//   · Alt kenar pahı — baskı ilk katmanı temiz olur
+//
+//   Yay yerleşimi:
+//   · Cıvata yukarıdan body_plate'ten geçer
+//   · Yay (OD 8 mm) cıvata şaftına geçirilir
+//   · Cıvata ayak hex somun cebine vidalanır
+//   · Yay body_plate alt yüzeyi ile ayak üst yüzeyi arasında görünür
 // ═══════════════════════════════════════════════════════════════
 module foot() {
     difference() {
         union() {
-            // Main cylinder
+            // Ana silindir gövde
             cylinder(d = FOOT_D, h = FOOT_H, $fn = 64);
-            // Flange collar at base — widens contact patch
-            cylinder(d = FOOT_D + 4, h = 2, $fn = 64);
+            // Alt genişletilmiş flange — oturma alanını artırır
+            cylinder(d = FOOT_D + 5, h = 2.5, $fn = 64);
         }
 
-        // M4 clearance through full height
+        // M4 şaft geçme deliği (tam boy)
         translate([0, 0, -EPS])
             cylinder(d = M4_CLEAR,
-                     h = FOOT_H + 2*EPS, $fn = 32);
+                     h = FOOT_H + 2*EPS, $fn = 36);
 
-        // Hex-nut pocket from top — bolt threads into nut
-        // Pocket depth = nut height; bolt tip is captured here
+        // Hex somun press-fit cebi (üstten)
         nut_pocket(FOOT_H - M4_NUT_H);
 
-        // Rubber-pad recess on sole (glue a 1 mm silicone disc)
+        // Alt silikon ped reses (Ø 12 mm, 1 mm derin)
         translate([0, 0, -EPS])
-            cylinder(d = FOOT_D - 4, h = 0.9, $fn = 48);
+            cylinder(d = 12, h = 1.0 + EPS, $fn = 48);
 
-        // Bottom outer chamfer — clean first layer
+        // Alt kenar pahı (baskı kalitesi için)
         translate([0, 0, -EPS])
             difference() {
-                cylinder(d = FOOT_D + 6, h = 1.2, $fn = 64);
-                cylinder(d1 = FOOT_D - 2, d2 = FOOT_D + 4,
-                         h  = 1.2 + EPS, $fn = 64);
+                cylinder(d = FOOT_D + 7, h = 1.5, $fn = 64);
+                translate([0, 0, -EPS])
+                    cylinder(d1 = FOOT_D - 2,
+                             d2 = FOOT_D + 5 + EPS,
+                             h  = 1.5 + 2*EPS, $fn = 64);
             }
     }
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 3  MIDDLE PLATE  (orange in reference)
+//   § 3  MIDDLE PLATE  (ayırma plakası / separator)
 //
-//   · Sits on top of body plate during capsule separation
-//   · 100 cap-size holes (slightly larger than body hole)
-//   · Raised rim (1.5 mm) around each hole on TOP surface
-//     — these pips help the capsule caps pop and separate cleanly
-//   · Bottom chamfer on each hole guides capsule bodies in
+//   Çalışma prensibi:
+//   · Body plate üstüne oturur; delikler BASAMAKLIDIR:
+//     — Üst 4 mm : CAP_HOLE (7.95 mm)  — kapak burada oturur
+//     — Alt 8 mm : BODY_HOLE (7.64 mm) — gövde bu bölümden geçer
+//   · Kapak alt kenarı basamak üzerinde oturur (yakalanır)
+//   · Tabla yatay kaydırılınca kapaklar gövdeden ayrılır
+//   · Üst ve alt girişlerde temiz pah — pürüzsüz geçiş
 // ═══════════════════════════════════════════════════════════════
 module middle_plate() {
-    difference() {
-        union() {
-            base_plate(PLATE_T);
-            // Raised pip rings around each hole (top surface)
-            for (r = [0:N-1], c = [0:N-1])
-                translate([BORDER + c*PITCH, BORDER + r*PITCH, PLATE_T - EPS])
-                    difference() {
-                        cylinder(d = CAP_HOLE + 3.5, h = 1.8, $fn = HOLE_FN);
-                        cylinder(d = CAP_HOLE,       h = 1.8 + EPS, $fn = HOLE_FN);
-                    }
-        }
+    // Basamak yüksekliği (CAP_HOLE bölümü)
+    STEP_H = 4.5;
+    // Pah yarıçapı
+    step_c_r = 0.8;
 
-        for (r = [0:N-1], c = [0:N-1])
-            translate([BORDER + c*PITCH, BORDER + r*PITCH, 0]) {
-                // Main hole (cap size)
-                translate([0, 0, -EPS])
-                    cylinder(d = CAP_HOLE,
-                             h = PLATE_T + 2*EPS, $fn = HOLE_FN);
-                // Entry chamfer on bottom — guides body into hole
-                translate([0, 0, -EPS])
-                    cylinder(d1 = CAP_HOLE + 3, d2 = CAP_HOLE,
-                             h  = 2.5, $fn = HOLE_FN);
-            }
-
-        align_holes();
-    }
-}
-
-
-// ═══════════════════════════════════════════════════════════════
-//   § 4  CAPPING PLATE
-//
-//   · Holds capsule CAPS open end up during filling
-//   · Cap pocket: 9 mm deep, matches CAP_HOLE diameter
-//   · Funnel entry from top: wide → CAP_HOLE over 3 mm
-//   · Plate bottom is solid — caps cannot fall through
-// ═══════════════════════════════════════════════════════════════
-module capping_plate() {
-    CAP_POCKET = 9.5;   // depth of cap-retention pocket
     difference() {
         base_plate(PLATE_T);
 
         for (r = [0:N-1], c = [0:N-1])
             translate([BORDER + c*PITCH, BORDER + r*PITCH, 0]) {
-                // Cap pocket — measured from TOP surface
+                // Alt bölüm — gövde geçişi (BODY_HOLE)
+                translate([0, 0, -EPS])
+                    cylinder(d = BODY_HOLE,
+                             h = PLATE_T - STEP_H + EPS, $fn = HOLE_FN);
+                // Basamak geçişi (konik — pürüzsüz)
+                translate([0, 0, PLATE_T - STEP_H - step_c_r])
+                    cylinder(d1 = BODY_HOLE,
+                             d2 = CAP_HOLE,
+                             h  = step_c_r * 2, $fn = HOLE_FN);
+                // Üst bölüm — kapak oturması (CAP_HOLE)
+                translate([0, 0, PLATE_T - STEP_H + step_c_r])
+                    cylinder(d = CAP_HOLE,
+                             h = STEP_H - step_c_r + EPS, $fn = HOLE_FN);
+                // Üst giriş pahı
+                translate([0, 0, PLATE_T - ENTRY_C])
+                    cylinder(d1 = CAP_HOLE,
+                             d2 = CAP_HOLE + 2*ENTRY_C*tan(ENTRY_ANGLE),
+                             h  = ENTRY_C + EPS, $fn = HOLE_FN);
+            }
+
+        align_holes();
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+//   § 4  CAPPING PLATE  (kapak tutma plakası)
+//
+//   · Kapaklar açık taraf YUKARI, bu plakadaki cebe oturur
+//   · Cep derinliği = CAP_L − 1.5 mm → kapak 1.5 mm taşar
+//     (gövde ile buluşma için yeterli rehberlik)
+//   · Üstte geniş huni girişi → kapsül kapak yükleme kolaylaşır
+//   · Alt yüzey düz ve kapalı — kapak içinden çıkamaz
+// ═══════════════════════════════════════════════════════════════
+module capping_plate() {
+    // Kapak cep derinliği
+    CAP_POCKET = CAP_L - 1.5;  // 9.6 mm
+    FUNNEL_D   = 12.0;          // huni üst çap
+
+    difference() {
+        base_plate(PLATE_T);
+
+        for (r = [0:N-1], c = [0:N-1])
+            translate([BORDER + c*PITCH, BORDER + r*PITCH, 0]) {
+                // Kapak cebi (üstten aşağı, alt yüzey kapalı)
                 translate([0, 0, PLATE_T - CAP_POCKET])
                     cylinder(d = CAP_HOLE,
                              h = CAP_POCKET + EPS, $fn = HOLE_FN);
-                // Funnel entry at top
+                // Huni girişi (üstten 3 mm)
                 translate([0, 0, PLATE_T - 3])
                     cylinder(d1 = CAP_HOLE, d2 = FUNNEL_D,
                              h  = 3 + EPS, $fn = HOLE_FN);
@@ -349,15 +388,17 @@ module capping_plate() {
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 5  FRAME PLATE  (tray that aligns the whole stack)
+//   § 5  FRAME PLATE  (hizalama çerçeve plakası)
 //
-//   · Base plate with a raised rectangular rim (FRAME_RIM wide)
-//   · Inside rim locates and squares all the other plates
-//   · Bottom has full hole grid (body size) so bodies protrude
-//   · Funnel from top guides bodies into alignment
+//   · Tüm diğer plakaları sınırlayan yüksek duvarlı tepsiye benzer
+//   · Alt yarı: BODY_HOLE — gövde geçişi
+//   · Üst yarı: CAP_HOLE + huni — kapak rehberliği
+//   · Üste FRAME_H yüksekliğinde yükseltilmiş çerçeve rim
+//     (FRAME_RIM genişliğinde duvar, iç boşluk açık)
 // ═══════════════════════════════════════════════════════════════
 module frame_plate() {
-    // The inside rim opening
+    HALF = PLATE_T / 2;
+    FUNNEL_D = 12.0;
     inner = PLATE_SIZE - 2*FRAME_RIM;
 
     union() {
@@ -366,14 +407,19 @@ module frame_plate() {
 
             for (r = [0:N-1], c = [0:N-1])
                 translate([BORDER + c*PITCH, BORDER + r*PITCH, 0]) {
-                    // Lower bore (body size)
+                    // Alt yarı — gövde geçiş deliği
                     translate([0, 0, -EPS])
                         cylinder(d = BODY_HOLE,
-                                 h = PLATE_T / 2 + EPS, $fn = HOLE_FN);
-                    // Upper bore + funnel (cap size with wide entry)
-                    translate([0, 0, PLATE_T / 2])
+                                 h = HALF + EPS, $fn = HOLE_FN);
+                    // Basamak geçişi
+                    translate([0, 0, HALF - 0.8])
+                        cylinder(d1 = BODY_HOLE, d2 = CAP_HOLE,
+                                 h  = 1.6, $fn = HOLE_FN);
+                    // Üst yarı — kapak deliği
+                    translate([0, 0, HALF + 0.8 - EPS])
                         cylinder(d = CAP_HOLE,
-                                 h = PLATE_T / 2 + EPS, $fn = HOLE_FN);
+                                 h = HALF - 0.8 + EPS, $fn = HOLE_FN);
+                    // Huni girişi
                     translate([0, 0, PLATE_T - 3])
                         cylinder(d1 = CAP_HOLE, d2 = FUNNEL_D,
                                  h  = 3 + EPS, $fn = HOLE_FN);
@@ -382,26 +428,27 @@ module frame_plate() {
             align_holes();
         }
 
-        // Raised rim on top
+        // Yükseltilmiş çerçeve duvarı (plakanın üstüne yapışır)
         translate([0, 0, PLATE_T - EPS])
             difference() {
                 base_plate(FRAME_H, chamfer = false);
                 translate([FRAME_RIM, FRAME_RIM, -EPS])
                     linear_extrude(FRAME_H + 2*EPS)
-                        offset(r = CORNER_R - 1) offset(r = -(CORNER_R - 1))
-                            square([inner, inner]);
+                        offset(r = max(CORNER_R - 1, 0.5))
+                            offset(r = -max(CORNER_R - 1, 0.5))
+                                square([inner, inner]);
             }
     }
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 6  SPILL GUARD
+//   § 6  SPILL GUARD  (toz dökülme koruması)
 //
-//   · Thin-wall frame that sits around the plate stack
-//   · Prevents powder spilling off during filling pass
-//   · Height: SPILL_H above seating plate top
-//   · Wall thickness: SPILL_W
+//   · Yalnızca çerçeve — içi ve altı açık
+//   · Toz dolumu sırasında body plate etrafına oturur
+//   · Duvar kalınlığı: SPILL_W = 10 mm
+//   · İç geçme boyutu: (PLATE_SIZE − 2×SPILL_W) kare
 // ═══════════════════════════════════════════════════════════════
 module spill_guard() {
     inner = PLATE_SIZE - 2*SPILL_W;
@@ -409,120 +456,137 @@ module spill_guard() {
         base_plate(SPILL_H, chamfer = false);
         translate([SPILL_W, SPILL_W, -EPS])
             linear_extrude(SPILL_H + 2*EPS)
-                offset(r = CORNER_R - 1) offset(r = -(CORNER_R - 1))
-                    square([inner, inner]);
+                offset(r = max(CORNER_R - 1, 0.5))
+                    offset(r = -max(CORNER_R - 1, 0.5))
+                        square([inner, inner]);
         align_holes();
     }
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 7  TAMPER  (peg plate to compress powder in capsule bodies)
+//   § 7  TAMPER  (toz sıkıştırma tamper)
 //
-//   · 100 pegs, diameter = PEG_OD (fits inside body shell ID)
-//   · Rounded peg tips for smooth entry
-//   · Ergonomic bridge handle on top
+//   · 100 adet ince peg (PEG_OD = 6.88 mm) aşağıya uzanır
+//   · Peg kapsül gövde iç çapına (7.13 mm) uyumlu girer
+//   · Peg uçları yarı-küresel → giriş sırasında yüzey hasarı yok
+//   · Üstte ergonomik tutamaç köprüsü
 // ═══════════════════════════════════════════════════════════════
 module tamper() {
+    PEG_DEPTH = 11;  // pegin kapsüle girdiği derinlik
+    HW = 110; HD = 30; HH = 34;
+
     union() {
         difference() {
             base_plate(PLATE_T);
             align_holes();
         }
 
-        // 100 tamper pegs projecting DOWNWARD
+        // 100 tamper peg (aşağı yön)
         for (r = [0:N-1], c = [0:N-1])
             translate([BORDER + c*PITCH, BORDER + r*PITCH, 0]) {
-                translate([0, 0, -(PEG_L - 1)])
-                    cylinder(d = PEG_OD, h = PEG_L, $fn = HOLE_FN);
-                // Rounded tip
-                translate([0, 0, -PEG_L])
+                // Peg gövdesi
+                translate([0, 0, -PEG_DEPTH])
+                    cylinder(d = PEG_OD,
+                             h = PEG_DEPTH, $fn = HOLE_FN);
+                // Yarı-küresel peg ucu
+                translate([0, 0, -PEG_DEPTH])
                     intersection() {
-                        scale([1, 1, 0.5]) sphere(d = PEG_OD, $fn = HOLE_FN);
-                        translate([-PEG_OD, -PEG_OD, -PEG_OD/2])
-                            cube([2*PEG_OD, 2*PEG_OD, PEG_OD/2]);
+                        scale([1, 1, 0.5])
+                            sphere(d = PEG_OD, $fn = HOLE_FN);
+                        translate([0, 0, -PEG_OD/2])
+                            cylinder(d = PEG_OD + 1,
+                                     h = PEG_OD/2, $fn = HOLE_FN);
                     }
             }
 
-        // Ergonomic bridge handle
-        HW = 110; HD = 28; HH = 32;
-        translate([(PLATE_SIZE - HW)/2, (PLATE_SIZE - HD)/2, PLATE_T])
+        // Ergonomik tutamaç
+        translate([(PLATE_SIZE - HW)/2,
+                   (PLATE_SIZE - HD)/2,
+                   PLATE_T])
             hull() {
-                for (x = [6, HW-6], y = [6, HD-6])
-                    translate([x, y, 0]) cylinder(d = 10, h = 2, $fn = 48);
-                for (x = [12, HW-12])
-                    translate([x, HD/2, HH-8]) sphere(d = 14, $fn = 48);
+                for (x = [8, HW-8], y = [8, HD-8])
+                    translate([x, y, 0]) cylinder(d = 12, h = 2, $fn = 48);
+                for (x = [15, HW-15])
+                    translate([x, HD/2, HH-10]) sphere(d = 16, $fn = 48);
             }
     }
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 8  POWDER SPREADER  (flat squeegee / scraper)
+//   § 8  SPREADER  (toz yayma spatulası)
 //
-//   · Trapezoidal blade, 4 mm thick
-//   · Angled leading edge (30°) for clean one-pass spreading
-//   · Fits inside spill-guard inner opening
+//   · Trapez formlu düz spatula
+//   · Baskı yönü: T ekseninde (4.5 mm ince)
+//   · Ön kenar 28° pahıyla temiz tek geçiş yayma
+//   · Spill guard iç açıklığına uyacak genişlikte
 // ═══════════════════════════════════════════════════════════════
 module spreader() {
-    T = 4.5;
-    W = inner_sz();
-    H = 140;
-
-    function inner_sz() = PLATE_SIZE - 2*SPILL_W - 4;
+    T   = 4.5;
+    W   = PLATE_SIZE - 2*SPILL_W - 5;  // 135 mm (spill guard içine sığar)
+    H   = 145;
+    R   = 3;
 
     difference() {
         linear_extrude(T)
-            offset(r = 3) offset(r = -3)
-                polygon([[0,0],[W,0],[W-14,H],[14,H]]);
-        // Angled scraper bevel on leading edge
+            offset(r = R) offset(r = -R)
+                polygon([[0,0],[W,0],[W-16,H],[16,H]]);
+        // Ön bevel kenar (keskin toz yayma kenarı)
         translate([-2, -EPS, T])
             rotate([28, 0, 0])
-                cube([W + 4, 14, 10]);
+                cube([W + 4, 16, 12]);
     }
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 9  TPU SPRING  (printed alternative to metal spring)
+//   § 9  TPU SPRING  (basılabilir yay — 95A TPU)
 //
-//   · Helical slot gives spring action; print in 95A TPU
-//   · Same OD as metal spring — drop-in replacement
+//   · Metal yay ile aynı OD → direkt değişim
+//   · Sarmal kesim yay esnekliği sağlar
+//   · Baskı: düz, destek gerektirmez
 // ═══════════════════════════════════════════════════════════════
 module tpu_spring() {
     difference() {
-        cylinder(d = SPR_OD - 0.3, h = SPR_FREE, $fn = 48);
-        // Bolt clearance
+        cylinder(d = SPR_OD - 0.4, h = SPR_FREE, $fn = 48);
+        // Cıvata geçme deliği
         translate([0, 0, -EPS])
-            cylinder(d = M4_CLEAR, h = SPR_FREE + 2*EPS, $fn = 32);
-        // Helical slot
-        linear_extrude(SPR_FREE, twist = 720, slices = 100, convexity = 10)
-            translate([SPR_OD/4, 0])
-                square([SPR_OD/2 + 1, 0.7], center = true);
+            cylinder(d = M4_CLEAR,
+                     h = SPR_FREE + 2*EPS, $fn = 32);
+        // Sarmal kesim (yay hareketi sağlar)
+        linear_extrude(SPR_FREE, twist = 720,
+                       slices = 120, convexity = 10)
+            translate([(SPR_OD - 0.4)/4, 0])
+                square([(SPR_OD - 0.4)/2 + 1, 0.8], center = true);
     }
 }
 
 
 // ═══════════════════════════════════════════════════════════════
-//   § 10  ALIGNMENT PIN  (4–8 per machine, PETG)
+//   § 10  ALIGNMENT PIN  (hizalama pimi — ×4–8)
 //
-//   · Slight taper so it self-centres in the 3.3 mm holes
-//   · Mushroom head for easy gripping
+//   · Hafif konik şaft → 3.3 mm deliklere kendi kendine merkezlenir
+//   · Mantar baş → kolay çekme
+//   · PETG baskı, sert geçme
 // ═══════════════════════════════════════════════════════════════
 module alignment_pin() {
+    HEAD_D = 10;
     union() {
-        // Shaft — tapers slightly for press fit
-        cylinder(d1 = 3.1, d2 = 2.9, h = PIN_L, $fn = 24);
-        // Flange transition
+        // Konik şaft
+        cylinder(d1 = 3.15, d2 = 2.90,
+                 h  = PIN_L, $fn = 28);
+        // Flanş geçiş
         translate([0, 0, PIN_L])
-            cylinder(d1 = 3.1, d2 = 9.0, h = 2, $fn = 32);
-        // Head cap
-        translate([0, 0, PIN_L + 2]) {
-            cylinder(d = 9.0, h = 5, $fn = 32);
-            translate([0, 0, 5])
+            cylinder(d1 = 3.15, d2 = HEAD_D,
+                     h  = 2.5, $fn = 36);
+        // Mantar baş
+        translate([0, 0, PIN_L + 2.5]) {
+            cylinder(d = HEAD_D, h = 6, $fn = 36);
+            translate([0, 0, 6])
                 intersection() {
-                    sphere(d = 9.0, $fn = 32);
-                    cylinder(d = 9.0, h = 4.5, $fn = 32);
+                    sphere(d = HEAD_D, $fn = 36);
+                    cylinder(d = HEAD_D, h = HEAD_D/2, $fn = 36);
                 }
         }
     }
@@ -543,19 +607,17 @@ else if (PART == "spreader")      spreader();
 else if (PART == "tpu_spring")    tpu_spring();
 else if (PART == "alignment_pin") alignment_pin();
 else if (PART == "all") {
-    // Lay all parts flat for overview
-    GAP = 185;
-    translate([    0,    0, 0]) body_plate();
-    translate([ GAP,     0, 0]) middle_plate();
-    translate([2*GAP,    0, 0]) capping_plate();
-    translate([    0,  GAP, 0]) frame_plate();
-    translate([ GAP,   GAP, 0]) spill_guard();
-    translate([2*GAP,  GAP, 0]) tamper();
-    translate([    0, 2*GAP,0]) spreader();
-    translate([ GAP,  2*GAP,0]) {
-        // 4 feet side by side
-        for (i = [0:3]) translate([i*22, 0, 0]) foot();
+    G = 188;  // parça araları
+    translate([  0,   0, 0]) body_plate();
+    translate([  G,   0, 0]) middle_plate();
+    translate([2*G,   0, 0]) capping_plate();
+    translate([  0,   G, 0]) frame_plate();
+    translate([  G,   G, 0]) spill_guard();
+    translate([2*G,   G, 0]) tamper();
+    translate([  0, 2*G, 0]) spreader();
+    translate([  G, 2*G, 0]) {
+        for (i = [0:3]) translate([i * 26, 0, 0]) foot();
     }
-    translate([ GAP+100, 2*GAP, 0]) tpu_spring();
-    translate([ GAP+130, 2*GAP, 0]) alignment_pin();
+    translate([G + 110, 2*G, 0]) tpu_spring();
+    translate([G + 140, 2*G, 0]) alignment_pin();
 }
